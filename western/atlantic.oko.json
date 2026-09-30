@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "atlantic",
+  "name": "Atlantic",
+  "category": "western",
+  "rank": 3,
+  "version": "0.1.0",
+  "status": "observe",
+  "language": "en",
+  "contentType": "video",
+  "engine": "react-vite-spa-signed",
+  "mirrors": [
+    "https://atlantic.st"
+  ],
+  "primaryMirror": "https://atlantic.st",
+  "labeling": {
+    "provider": "tmdb-proxy",
+    "tags": [
+      "HD",
+      "subtitles"
+    ],
+    "posterSource": "image.tmdb.org (preconnect)",
+    "qualitySource": "HD + subtitles focus (no CAM/TS seen)",
+    "notes": "Observe only — explicit anti-scraper + DMCA-1201 notices in HTML/JS. Only public routes documented, no crypto extraction."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 1
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movies + /tv/on_the_air + /tv/airing_today (CSR)"
+    },
+    "response": {
+      "format": "spa-shell (#root, /assets/index-DLFk_OU5.js)"
+    },
+    "extract": {
+      "routes": [
+        "/watch/{tmdbId}",
+        "/watch/{id}/{S}/{E}",
+        "/title/{type}/{id} (SEO)",
+        "/content/movie/{id}",
+        "/content/tv/{id}/{s}/{e}",
+        "/tv/on_the_air",
+        "/embed/movie/{id}",
+        "/embed/tv/{id}/{s}/{e}",
+        "/simkl"
+      ]
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search?q={query} (JSON-LD SearchAction)"
+    },
+    "response": {
+      "format": "spa-shell"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/title/{type}/{id}"
+    },
+    "response": {
+      "format": "spa-shell"
+    },
+    "extract": {
+      "fields": [
+        "TMDB poster/backdrop, ★ + year (e.g. Toy Story 5 2026 ★8.3)",
+        "multi-subs via sub.vdrk.site/v1/movie|tv"
+      ]
+    }
+  },
+  "episodes": {
+    "pattern": "movie /watch/{id}; series /watch/{id}/{S}/{E} + per-episode subs",
+    "seriesRule": "S/E in path"
+  },
+  "streams": {
+    "pattern": "HLS (hls.js bundle) via signed backend api.atlantic.st + embed iframes (Server 1..9 family pattern, unconfirmed)",
+    "response": {
+      "format": "hls-signed-rotating"
+    },
+    "okoMap": "lowest ROI — keep observe until legal/technical path clears"
+  },
+  "notes": {
+    "blockers": [
+      "CSR-only",
+      "Turnstile",
+      "signed/rotating protocols + legal tripwire (HIGH)"
+    ],
+    "confidence": "med routes, low streams (by design)",
+    "verified": "2026-09-30 (CF shell, #root missing as expected)"
+  }
+}

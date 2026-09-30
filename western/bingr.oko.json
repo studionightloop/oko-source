@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "bingr",
+  "name": "Bingr",
+  "category": "western",
+  "rank": 4,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "react-vite-spa-api",
+  "mirrors": [
+    "https://bingr.one"
+  ],
+  "primaryMirror": "https://bingr.one",
+  "backends": [
+    "https://api.bingr.one",
+    "https://hmm.fetchbox.lol",
+    "https://api.gaiaflix.live"
+  ],
+  "labeling": {
+    "provider": "tmdb-proxy",
+    "tags": [
+      "4K HDR claim",
+      "Movie",
+      "Series",
+      "Anime"
+    ],
+    "posterSource": "TMDB + img10.hotstar.com (anime art)",
+    "qualitySource": "4K HDR claim; rating · year · Drama · Mystery cards",
+    "notes": "Sibling bingr.tv seen. Env VITE_API_URL=https://api.bingr.one/api, VITE_GAIAFLIX_API_URL, VITE_TRAILER_API_URL. No content stored — third parties."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movies (up to 4K HDR) | /tv | /anime | /discover/{type} | /categories | /category/{name} | /genre/{name} | /language/{name} | /collection/{id} | /studio/{name} | /person/{id} | /sports | /live-tv | /watch-party | /embed (dev ad-free)"
+    },
+    "response": {
+      "format": "spa-shell (React 19 + Vite, ~80 chunks, PWA, Umami, Monetag zone 11552326 gated by VITE_ADS_ENABLED)"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/explore?q={query} (canonical SearchAction)"
+    },
+    "response": {
+      "format": "spa-shell (CSR only)"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movie/{tmdbId} (e.g. /movie/1279493) | /tv/{id} | /anime/{id} (MovieDetails/TvDetails/AnimeDetails chunks)"
+    },
+    "response": {
+      "format": "spa-shell"
+    },
+    "extract": {
+      "fields": [
+        "TMDB synopsis/rating/cast/sections/recommendations/watchlists"
+      ]
+    }
+  },
+  "episodes": {
+    "pattern": "/watch/{type}/{id} | /watch/{type}/{id}/{ep} | /watch/{type}/{id}/{season}/{ep} (nav in Watch-*.js); sports /watch/sports/{id}; iptv /watch/iptv/{channelId}",
+    "seriesRule": "S/E in path"
+  },
+  "streams": {
+    "pattern": "HLS player (hls.js chunk) + backends api.bingr.one/api + fetchbox + gaiaflix; user APIs /me/progress|continue|watchlist|history|search-history",
+    "response": {
+      "format": "hls-token-gated"
+    },
+    "okoMap": "exact server list needs authed JS run"
+  },
+  "notes": {
+    "blockers": [
+      "CSR-only",
+      "Turnstile on auth",
+      "token-gated API"
+    ],
+    "confidence": "high engine/routes, med search/details, low-med streams",
+    "verified": "2026-09-30 (/api/health ok)"
+  }
+}

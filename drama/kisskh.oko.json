@@ -1,0 +1,172 @@
+{
+  "schemaVersion": 1,
+  "id": "kisskh",
+  "name": "KissKH",
+  "category": "drama",
+  "rank": 1,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "mul",
+  "contentType": "video",
+  "engine": "php-json-api-spa",
+  "mirrors": [
+    "https://kisskh.co",
+    "https://kisskh.la",
+    "https://kisskh.id",
+    "https://kisskh.is",
+    "https://kisskh.do",
+    "https://kisskh.ovh"
+  ],
+  "primaryMirror": "https://kisskh.co",
+  "labeling": {
+    "provider": "kisskh-api",
+    "tags": [
+      "K-Drama",
+      "C-Drama",
+      "J-Drama",
+      "Thai",
+      "SUB"
+    ],
+    "posterSource": "mixed CDN (kissimge1.site, TMDB w1000, Viki, wsrv.nl, cloudfront, netflix nflxso) — hotlink ok",
+    "qualitySource": "240p-720p HD claim (even 1080p), SUB badge from episodes[].sub count",
+    "notes": "No genres/rating/HD flag in API. Country->K/C/J-Drama chip, type TVSeries/Movie/Anime, status Ongoing/Completed, label Coming/Special Ep."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json",
+    "Referer": "{mirror}/"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api/DramaList/List?page={page}&type={type}&sub={sub}&country={country}&status={status}&order={order}&pageSize=20"
+    },
+    "response": {
+      "format": "json",
+      "shape": "{page,pageSize,totalCount:12922,data[]}"
+    },
+    "extract": {
+      "fields": {
+        "id": "int (e.g. 8714)",
+        "title": "text (+year suffix)",
+        "poster": "thumbnail",
+        "episodesCount": "int",
+        "label": "Coming/Special/SUB"
+      }
+    },
+    "filters": {
+      "type": "0=All,1=Korean,2=Chinese,3=Japanese,4=Thai,5=Other",
+      "sub": "0=All,1=Sub,2=Raw",
+      "country": "0=All,1=Korea,2=China,3=Japan,4=Thailand,5=Other",
+      "status": "0=All,1=Ongoing,2=Completed",
+      "order": "0=Default,1=Popular,2=Updated,3=New,4=Year,5=A-Z"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api/DramaList/Search?q={query}&type=0"
+    },
+    "response": {
+      "format": "json-list"
+    },
+    "extract": {
+      "example": "q=queen -> 8714 Queen of Tears (18 eps)",
+      "okoMap": "CircleFtpPost{id, title, poster, year from title/releaseDate}"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api/DramaList/Drama/{id}?isq=false"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "fields": {
+        "title": "text",
+        "description": "text",
+        "poster": "thumbnail",
+        "country": "South Korea",
+        "status": "Completed",
+        "type": "TVSeries",
+        "year": "releaseDate 2024-03-09",
+        "episodesCount": 18
+      }
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "from details.episodes[] (desc order, reverse for UI)"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "fields": {
+        "episodeID": "id (e.g. 147731)",
+        "episodeNumber": "number float (16.2/16.1=specials)",
+        "sub": "subtitle track count (5)"
+      },
+      "seriesRule": "number float -> season=1, episode=round(number); specials keep decimal label",
+      "urlPattern": "/Drama/{slug}?id={id}&ep={epId}"
+    }
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api/DramaList/Episode/{episodeId}.png?err=false&ts=&time=&kkey={vidKkey} (403 without kkey)"
+    },
+    "response": {
+      "format": "hls",
+      "fields": [
+        "Video",
+        "Video_tmp/BackupVideo",
+        "ThirdVideo"
+      ],
+      "type": "hls (cdn.kisskh.do/hls/…m3u8, time-limited, resolve fresh)"
+    },
+    "subtitles": {
+      "request": "{mirror}/api/Sub/{episodeId}?kkey={subKkey}",
+      "response": "[{src/file,label:English,land:en,kind:captions}] VTT",
+      "langs": [
+        "English",
+        "Khmer",
+        "Indonesian",
+        "Malay",
+        "Thai",
+        "Arabic"
+      ]
+    },
+    "kkey": {
+      "options": [
+        "Playwright sniff fetch(/api/Sub/)",
+        "enc-dec.app /api/enc-kisskh?text={epId}&type=vid|sub",
+        "env KISSKH_STREAM_KEY/SUB_KEY"
+      ],
+      "okoMap": "FileInfo{url=hls} + subtitles[] + headers{Referer episode page}"
+    }
+  },
+  "notes": {
+    "blockers": [
+      "kkey required (403 reproduced)",
+      "Cloudflare + SPA shell (API only)",
+      "no genre param"
+    ],
+    "confidence": "high",
+    "verified": "2026-09-30 (Search/List/Drama/Upcoming live)"
+  }
+}

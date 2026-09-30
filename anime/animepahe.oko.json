@@ -1,0 +1,137 @@
+{
+  "schemaVersion": 1,
+  "id": "animepahe",
+  "name": "AnimePahe",
+  "category": "anime",
+  "rank": 2,
+  "version": "0.1.0",
+  "status": "blocked",
+  "language": "en",
+  "contentType": "video",
+  "engine": "php-json-api-selfhost-owocdn",
+  "mirrors": [
+    "https://animepahe.pw",
+    "https://animepahe.com",
+    "https://animepahe.org"
+  ],
+  "primaryMirror": "https://animepahe.com",
+  "labeling": {
+    "provider": "everythingmoe",
+    "tags": [
+      "Easy download",
+      "Self-host",
+      "Old reliable",
+      "Simple interface",
+      "Hard-sub"
+    ],
+    "posterSource": "animepahe wp-content uploads",
+    "qualitySource": "compressed 720p/1080p + watermark flag",
+    "notes": ".ru is PARKED (for sale), .si empty, .com/.pw/.org Cloudflare-403 as of 2026-09-30. No native AniList ID — enrich via everythingmoe/AniList."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0",
+    "Accept": "application/json"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 1
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime (A-Z) + / (latest releases)"
+    },
+    "response": {
+      "format": "html"
+    },
+    "extract": {
+      "apiAlt": "/api?m=airing&page={page}"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api?m=search&q={query}"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "fields": {
+        "session": "anime session id (e.g. bfa8d26d-…)",
+        "title": "text",
+        "poster": "uploads"
+      }
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{session}"
+    },
+    "response": {
+      "format": "html"
+    },
+    "extract": {
+      "fields": [
+        "synopsis",
+        "genres",
+        "year",
+        "type",
+        "status"
+      ]
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api?m=release&id={session}&sort=episode_desc&page={page}"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "fields": {
+        "episodeSession": "id",
+        "episodeNumber": "ep#"
+      },
+      "seriesRule": "flat Season 1"
+    }
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{session}/{episodeSession}"
+    },
+    "response": {
+      "format": "embed-iframe",
+      "hosts": [
+        "kwik.cx/si",
+        "turbovidhls",
+        "blogger"
+      ]
+    },
+    "extract": {
+      "result": "direct MP4 + m3u8 via VM/Playwright decrypt",
+      "subtitles": "hard-sub baked, no soft VTT",
+      "dub": "partial (~24-36% titles)"
+    },
+    "okoMap": "needs headless resolve before FileInfo.url usable"
+  },
+  "notes": {
+    "blockers": [
+      "Cloudflare JS + DDoS-Guard cookies (all 3 mirrors 403)",
+      "aggressive redirects",
+      "1080p buffering"
+    ],
+    "confidence": "pattern-high / mirrors-blocked",
+    "verified": "2026-09-30 (403 on all mirrors)"
+  }
+}

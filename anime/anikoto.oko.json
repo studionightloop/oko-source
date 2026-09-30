@@ -1,0 +1,161 @@
+{
+  "schemaVersion": 1,
+  "id": "anikoto",
+  "name": "AniKoto",
+  "category": "anime",
+  "rank": 1,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "hianime-clone-static",
+  "mirrors": [
+    "https://anikototv.to",
+    "https://anichi.to",
+    "https://anisuge.tv",
+    "https://animesogo.to",
+    "https://anixtv.me",
+    "https://animixplay.tube",
+    "https://animepahetv.to",
+    "https://9animez.org",
+    "https://hianimez.org"
+  ],
+  "primaryMirror": "https://anichi.to",
+  "labeling": {
+    "provider": "everythingmoe",
+    "tags": [
+      "Scraper",
+      "Self-host",
+      "Modern interface",
+      "Dub friendly",
+      "Hard-sub",
+      "Soft-sub"
+    ],
+    "posterSource": "cdn.anipixcdn.co thumbnail (300x400)",
+    "qualitySource": "HD badge + sub/dub episode counts",
+    "notes": "Rank #1 on everythingmoe. Anichi uses /anime/ path, others /watch/ — same hash slugs."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0 (Linux; Android 14)",
+    "Referer": "https://anikototv.to/"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/home"
+    },
+    "response": {
+      "format": "html"
+    },
+    "extract": {
+      "rows": [
+        "spotlight/trending/top10",
+        "most-viewed",
+        "latest-updated",
+        "new-release",
+        "genre/:name",
+        "type/:name",
+        "status/:name",
+        "az-list/:letter",
+        "schedule"
+      ],
+      "collection": "#list-items div.item",
+      "fields": {
+        "sourceID": "a[href*=/watch/] -> strip prefix/suffix",
+        "title": "a.d-title text",
+        "posterURL": "div.poster img[src]"
+      }
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/filter?keyword={query}&page={page}"
+    },
+    "response": {
+      "format": "html"
+    },
+    "extract": {
+      "collection": "#list-items div.item",
+      "suggestAPI": "/search/suggest?keyword={query} -> JSON",
+      "fields": {
+        "sourceID": "watch/ slug-hash (e.g. one-piece-odmau)",
+        "title": "text",
+        "posterURL": "cdn.anipixcdn.co"
+      }
+    },
+    "okoMap": "listItem -> CircleFtpPost{id=slug-hash, title, poster}"
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/watch/{titleID}"
+    },
+    "response": {
+      "format": "html"
+    },
+    "extract": {
+      "sharedID": "#watch-main[data-id] (e.g. 1642)",
+      "title": "h1.d-title",
+      "synopsis": "div.synopsis",
+      "poster": "cdn.anipixcdn.co",
+      "meta": "Type/Year/Status/Genres/MAL score/Studios/PG-13/HD"
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/ajax/episode/list/{sharedID}",
+      "note": "direct id without extra headers 500s — needs session/Referer like browser; AROKI uses /ajax/server/list?servers={episodeID}"
+    },
+    "response": {
+      "format": "json-wrapped-html"
+    },
+    "extract": {
+      "collection": ".episodes ul.ep-range li",
+      "fields": {
+        "episodeID": "a[data-ids]",
+        "episodeNumber": "a[data-num]",
+        "variants": "sub/dub dropdown"
+      },
+      "seriesRule": "flat Season 1, ranges pages (?ep=N)"
+    }
+  },
+  "streams": {
+    "servers": [
+      "HD-1",
+      "HD-3",
+      "Vidstream",
+      "Kiwi"
+    ],
+    "pattern": "/api/v2/hianime/episode/servers?animeEpisodeId=&ep= -> /episode/sources?server=hd-1&category={sub|dub}",
+    "response": {
+      "format": "hls",
+      "subtitles": "VTT multi + intro/outro timestamps"
+    },
+    "headers": {
+      "Referer": "megaplay host"
+    },
+    "okoMap": "Episode{seasonNumber=1, episodeNumber, title} + FileInfo{url=m3u8} + subtitles[]"
+  },
+  "notes": {
+    "blockers": [
+      "Cloudflare on primary (anichi fallback works)",
+      "server-IP AJAX block without session",
+      "popups"
+    ],
+    "confidence": "high",
+    "verified": "2026-09-30 via curl (home/filter/watch markers ok)"
+  }
+}

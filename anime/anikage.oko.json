@@ -1,0 +1,139 @@
+{
+  "schemaVersion": 1,
+  "id": "anikage",
+  "name": "AniKage",
+  "category": "anime",
+  "rank": 6,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "sveltekit-anilist-koto",
+  "mirrors": [
+    "https://anikage.cc"
+  ],
+  "primaryMirror": "https://anikage.cc",
+  "labeling": {
+    "provider": "everythingmoe + anilist",
+    "tags": [
+      "Self-host",
+      "Soft-sub",
+      "Hard-sub"
+    ],
+    "posterSource": "s4.anilist.co extraLarge/large/medium",
+    "qualitySource": "qualityLabel per source (koto HLS)",
+    "notes": "Convertible directly from AROKI anikage v0.3.5 (pure JSON). SvelteKit __data.json devalue graph — use /api/* instead."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://anikage.cc/",
+    "Origin": "https://anikage.cc"
+  },
+  "limits": {
+    "timeoutMs": 8000,
+    "maxConcurrent": 1
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "https://anikage.cc/api/media/anime/browse?sort=TRENDING_DESC|POPULARITY_DESC|SCORE_DESC&page={page}"
+    },
+    "response": {
+      "format": "json",
+      "shape": "{\"data\":[{\"slug,anilistId,title{romaji,english},coverImage{extraLarge},format,year,genres,…}]+"
+    },
+    "extract": {
+      "collection": "data[*]",
+      "fields": {
+        "sourceID": "slug",
+        "title": "title.english fallback userPreferred,romaji",
+        "poster": "coverImage.extraLarge"
+      }
+    },
+    "okoMap": "CircleFtpPost{id=slug, title, poster}"
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "https://anikage.cc/api/media/anime/browse?q={query}&page={page}"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "same": "as discovery"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "https://anikage.cc/api/media/anime/{slug}"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "fields": {
+        "title": "anime.title.english",
+        "synopsis": "anime.malDescription",
+        "poster": "anime.coverImage.extraLarge",
+        "year": "anime.year",
+        "genres": "anime.genres[*]",
+        "sharedID": "anime.anilistId"
+      }
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "https://anikage.cc/api/media/anime/{slug}/episodes"
+    },
+    "response": {
+      "format": "json",
+      "collection": "[*]"
+    },
+    "extract": {
+      "fields": {
+        "episodeID": "number",
+        "title": "title",
+        "episodeNumber": "number"
+      },
+      "seriesRule": "flat (One Piece currently unavailable)"
+    }
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "https://anikage.cc/api/media/anime/{slug}/episodes/{ep}/sources?provider=koto&lang={sub|dub}&refresh=1"
+    },
+    "response": {
+      "format": "hls",
+      "hosts": [
+        "og.bakayaro.live",
+        "*.bakayaro.live",
+        "bibiemb.xyz"
+      ],
+      "template": "https://og.bakayaro.live/{value}",
+      "subtitles": "subtitles[*]{file->template, label, srclang}",
+      "quality": "qualityLabel"
+    },
+    "okoMap": "FileInfo{url, quality} + headers{Referer,Origin} + subtitles[]"
+  },
+  "notes": {
+    "blockers": [
+      "SvelteKit resolver for /anime/info/:nanoid + /anime/watch/:id (opaque ids)",
+      "Cloudflare",
+      "incomplete store gaps"
+    ],
+    "confidence": "med-high (API verified)",
+    "verified": "2026-09-30 (browse data[0].slug ok)",
+    "arokiRef": "anikage v0.3.5 + ANIKAGE_CAPTIONS_0_3_3.md"
+  }
+}

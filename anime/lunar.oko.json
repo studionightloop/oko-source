@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "lunar",
+  "name": "Lunar",
+  "category": "anime",
+  "rank": 7,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "nextjs-social-turbopack",
+  "mirrors": [
+    "https://lunarx.to"
+  ],
+  "primaryMirror": "https://lunarx.to",
+  "labeling": {
+    "provider": "anilist",
+    "tags": [
+      "social",
+      "torrent",
+      "watch-together"
+    ],
+    "posterSource": "api.lunarx.to + s4.anilist.co",
+    "qualitySource": "variable (5 sources shown per ep)",
+    "notes": "Anime+manga+novel social platform, almost no scraper docs. Hardest for declarative JSON."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 1
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/ (Browse Catalog)"
+    },
+    "response": {
+      "format": "nextjs-shell",
+      "chunks": "/_next/static/chunks/*turbopack*"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search?query={query} (app-only, AniList-backed)"
+    },
+    "response": {
+      "format": "js-hydrated"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{anilistId} (e.g. /anime/2389, /anime/184756)"
+    },
+    "response": {
+      "format": "js-hydrated"
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{id}/{season}/{ep} (e.g. /anime/140842/1/8 = 5 sources)"
+    },
+    "response": {
+      "format": "js-hydrated"
+    }
+  },
+  "streams": {
+    "pattern": "cluster.lunaranime.ru HLS + torrent direct; Proxify-Streams /proxy?data={url}|{referer} aggregates miruro/anikuro/lunaranime/animanga (XOR/Base64)",
+    "response": {
+      "format": "hls",
+      "subtitles": "custom multi-track + per-show prefs"
+    },
+    "okoMap": "needs authed JS run — lowest ROI"
+  },
+  "notes": {
+    "blockers": [
+      "login/Discord-gated catalog",
+      "JS-only",
+      "guild/chat overhead"
+    ],
+    "confidence": "low-med",
+    "verified": "2026-09-30 (next-shell markers ok)"
+  }
+}

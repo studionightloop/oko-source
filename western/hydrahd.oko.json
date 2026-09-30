@@ -1,0 +1,115 @@
+{
+  "schemaVersion": 1,
+  "id": "hydrahd",
+  "name": "HydraHD",
+  "category": "western",
+  "rank": 2,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "php-watchopolis-ssr",
+  "mirrors": [
+    "https://hydrahd.ws",
+    "https://hydrahd.com",
+    "https://hydrahd.me",
+    "https://hydrahd.ac"
+  ],
+  "primaryMirror": "https://hydrahd.ws",
+  "disabled": [
+    "https://hydrahd.ru"
+  ],
+  "labeling": {
+    "provider": "tmdb-proxy",
+    "tags": [
+      "HD",
+      "4K-adaptive-claim",
+      "TS",
+      "CAM-warning"
+    ],
+    "posterSource": "image.tmdb.org w342/w1280/w185 + /themes/placeholder",
+    "qualitySource": "card badges HD vs TS (e.g. TS 8.2 Spider-Man) + ★rating year 103min; comments warn HD label != HD",
+    "notes": "PWA + Telegram t.me/HDHYDRAHD. Backups: .com/.io/.cc/.me/.ac (see hydrahd.info)."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://hydrahd.ws/"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movies | /tv-shows | /movies/year/{p} | /movies/popular/ | /movies/star-rating/ | /today | /random | /collections/{p}"
+    },
+    "response": {
+      "format": "html-ssr (jQuery 3.6.4, Swiper)"
+    },
+    "extract": {
+      "genres": "/genres/watch-{slug}-movies-online-free (21)",
+      "seriesGenres": "/tv-tags/{slug}",
+      "geo": "/searchby-country/{Name}/{p} + /searchby-language/{Lang}/{p} + /searchby-keyword/{id}/{p} + /keywords + /person/{id}"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search/{query}/{p} (e.g. /search/batman/2, 9 pages) + form index.php?menu=search&query= + live AJAX #search-results-container (see /js/scripts.js)"
+    },
+    "response": {
+      "format": "html-ssr"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movie/{id}-watch-{slug}-{year}-online + /watchseries/{slug}-online-free"
+    },
+    "response": {
+      "format": "html-ssr"
+    },
+    "extract": {
+      "fields": [
+        "logo/backdrop/poster",
+        "plot",
+        "Votes(avg)",
+        "Year/Certificate PG/TV-MA/Country/Language/Genre/Keywords",
+        "director+cast/character/person/{id}",
+        "Similar",
+        "Show Status: Returning Series (series only)"
+      ]
+    }
+  },
+  "episodes": {
+    "pattern": "in-page seasons Season 1..N, each Episode N date-name with data-slug/data-season/data-episode; JS rewrites to /watchseries/{slug}-online-free/season/{S}/episode/{E}",
+    "seriesRule": "S/E from data attrs"
+  },
+  "streams": {
+    "pattern": "$.get('/ajax/mov_0.php', {i: imdbId (tt1756855), t: tmdbId (1204680)}) — multi-server, Last server Full HD Beta; trailer youtube data-embed-url",
+    "response": {
+      "format": "embed (vidsrc/filemoon-class behind AJAX, obfuscated fkr_ + 1x1 iframe loader)"
+    },
+    "headers": {
+      "note": "needs session + Referer"
+    },
+    "okoMap": "series episode AJAX endpoint only in scripts.js (needs JS run)"
+  },
+  "notes": {
+    "blockers": [
+      "AJAX needs session/Referer",
+      "login for rating/MyList",
+      "obfuscated anti-scrape"
+    ],
+    "confidence": "high discovery/search/details/episodes, med-low streams",
+    "verified": "2026-09-30 (movies markers ok)"
+  }
+}

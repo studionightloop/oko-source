@@ -1,0 +1,149 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Oko Source Manifest v1",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "category",
+    "rank",
+    "version",
+    "status",
+    "mirrors",
+    "primaryMirror",
+    "engine",
+    "capabilities",
+    "discovery",
+    "search",
+    "details"
+  ],
+  "properties": {
+    "schemaVersion": {
+      "type": "integer",
+      "const": 1
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$"
+    },
+    "name": {
+      "type": "string"
+    },
+    "category": {
+      "type": "string",
+      "enum": [
+        "anime",
+        "drama",
+        "western"
+      ]
+    },
+    "rank": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "version": {
+      "type": "string"
+    },
+    "status": {
+      "type": "string",
+      "enum": [
+        "active",
+        "blocked",
+        "parked",
+        "disabled",
+        "observe"
+      ]
+    },
+    "language": {
+      "type": "string"
+    },
+    "contentType": {
+      "type": "string",
+      "const": "video"
+    },
+    "engine": {
+      "type": "string"
+    },
+    "mirrors": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1
+    },
+    "primaryMirror": {
+      "type": "string"
+    },
+    "labeling": {
+      "type": "object",
+      "properties": {
+        "provider": {
+          "type": "string"
+        },
+        "tags": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "posterSource": {
+          "type": "string"
+        },
+        "qualitySource": {
+          "type": "string"
+        },
+        "notes": {
+          "type": "string"
+        }
+      }
+    },
+    "headers": {
+      "type": "object"
+    },
+    "limits": {
+      "type": "object"
+    },
+    "capabilities": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "discovery": {
+      "type": "object"
+    },
+    "search": {
+      "type": "object"
+    },
+    "details": {
+      "type": "object"
+    },
+    "episodes": {
+      "type": "object"
+    },
+    "streams": {
+      "type": "object"
+    },
+    "filters": {
+      "type": "object"
+    },
+    "notes": {
+      "type": "object",
+      "properties": {
+        "blockers": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        },
+        "confidence": {
+          "type": "string"
+        },
+        "verified": {
+          "type": "string"
+        }
+      }
+    }
+  }
+}

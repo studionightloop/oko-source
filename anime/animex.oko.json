@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "id": "animex",
+  "name": "AnimeX",
+  "category": "anime",
+  "rank": 5,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "custom-anilist-megaplay",
+  "mirrors": [
+    "https://animex.one"
+  ],
+  "primaryMirror": "https://animex.one",
+  "labeling": {
+    "provider": "everythingmoe",
+    "tags": [
+      "Self-host",
+      "Easy download",
+      "Dub friendly",
+      "Hard-sub"
+    ],
+    "posterSource": "s4.anilist.co large",
+    "qualitySource": "1080p/720p/360p selector",
+    "notes": "JS catalog (empty SSR) — needs hydrated fetch. OpenSearch at /opensearch.xml."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0",
+    "Referer": "https://megaplay.buzz/"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/home + /catalog?season=SUMMER&year=2026&format=MOVIE|TV&genre=&tag=&status=&studio=&sort=SCORE_DESC + /schedule"
+    },
+    "response": {
+      "format": "js-hydrated"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/catalog?search={query} (client-side)"
+    },
+    "response": {
+      "format": "js-hydrated"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{slug}-{anilistId} (e.g. /anime/the-summer-hikaru-died-177689)"
+    },
+    "response": {
+      "format": "js-hydrated"
+    },
+    "extract": {
+      "fields": [
+        "12EP TV/FINISHED/summer/81%",
+        "genres/synopsis/AniList+MAL/relations/chars"
+      ]
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/watch/{slug}-episode-{n}"
+    },
+    "response": {
+      "format": "js-hydrated"
+    },
+    "extract": {
+      "seriesRule": "flat"
+    }
+  },
+  "streams": {
+    "pattern": "/api/v2/animex/episode/servers?animeEpisodeId={anilistId}&ep={n} -> /episode/sources?server=megaplay&category={sub|dub}",
+    "response": {
+      "format": "hls",
+      "subtitles": "VTT + intro/outro + proxy?url=&ref=",
+      "extras": [
+        "torrents",
+        "trailers"
+      ]
+    },
+    "okoMap": "same Shirayuki shape as anikoto-megaplay family"
+  },
+  "notes": {
+    "blockers": [
+      "JS render required",
+      "some titles currently unavailable",
+      "small library"
+    ],
+    "confidence": "med-high",
+    "verified": "2026-09-30 (home markers ok)"
+  }
+}

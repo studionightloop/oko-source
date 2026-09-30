@@ -1,0 +1,190 @@
+{
+  "schemaVersion": 1,
+  "id": "shuttletv",
+  "name": "ShuttleTV",
+  "category": "western",
+  "rank": 1,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "nextjs-csr",
+  "mirrors": [
+    "https://shuttletv.su",
+    "https://shuttletv.pk"
+  ],
+  "primaryMirror": "https://shuttletv.su",
+  "labeling": {
+    "provider": "tmdb-proxy",
+    "tags": [
+      "HD",
+      "Movie",
+      "TV"
+    ],
+    "posterSource": "image.tmdb.org/t/p (w342/w500/w1280 per TMDB proxy)",
+    "qualitySource": "HD badge on cards",
+    "notes": ".su/.pk = Next.js CSR shell (/_next/static + turbopack, verified 2026-09-30). IDs are raw TMDB IDs. User-given domains only."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movies | /tv | /trending | /top-rated | /new-releases | /collections | /genre/{slug} | /year/{yyyy} | /country/{code} | /network/{id} (CSR routes, JS hydration required)"
+    },
+    "response": {
+      "format": "csr-shell (/_next/static + turbopack, no SSR cards)"
+    },
+    "extract": {
+      "cards": "/movie/{tmdbId} | /tv/{tmdbId} after JS render",
+      "okoMap": "needs JS run for cards; routes enumerated from app shell"
+    }
+  },
+  "filters": {
+    "sort": [
+      "Most Popular",
+      "Highest Rated",
+      "Newest First",
+      "Oldest First",
+      "Highest Revenue"
+    ],
+    "movieGenres19": [
+      "action",
+      "adventure",
+      "animation",
+      "comedy",
+      "crime",
+      "documentary",
+      "drama",
+      "family",
+      "fantasy",
+      "history",
+      "horror",
+      "music",
+      "mystery",
+      "romance",
+      "sci-fi",
+      "tv-movie",
+      "thriller",
+      "war",
+      "western"
+    ],
+    "tvGenres16": [
+      "action-adventure",
+      "animation",
+      "comedy",
+      "crime",
+      "documentary",
+      "drama",
+      "family",
+      "kids",
+      "mystery",
+      "news",
+      "reality",
+      "sci-fi-fantasy",
+      "soap",
+      "talk",
+      "war-politics",
+      "western"
+    ],
+    "countries24": [
+      "us",
+      "gb",
+      "kr",
+      "jp",
+      "in",
+      "fr",
+      "es",
+      "de",
+      "it",
+      "cn",
+      "th",
+      "tr",
+      "br",
+      "mx",
+      "ru",
+      "se",
+      "dk",
+      "no",
+      "ar",
+      "ph",
+      "id",
+      "ng",
+      "eg",
+      "pl"
+    ],
+    "networks": {
+      "213": "Netflix",
+      "1024": "Amazon Prime",
+      "2552": "Apple TV+",
+      "49": "HBO",
+      "2739": "Disney+",
+      "453": "Hulu"
+    },
+    "years": "1990-2026 (/year/{yyyy}?type=movie|tv)",
+    "okoMap": "Category rows = genre/country/network/year lists; View More = paged ?page="
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search?q={query}&page={page} (CSR, JS hydration required)"
+    },
+    "response": {
+      "format": "csr-shell"
+    },
+    "extract": {
+      "cards": "/movie/{id} or /tv/{id} after JS render"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/movie/{tmdbId} | /tv/{tmdbId} (CSR, JS hydration required)"
+    },
+    "response": {
+      "format": "csr-shell"
+    },
+    "extract": {
+      "fields": [
+        "poster + backdrop (TMDB proxy after render)",
+        "Watch now -> /watch/movie/{id}",
+        "synopsis/year/duration/HD/rating/genres/cast"
+      ]
+    }
+  },
+  "episodes": {
+    "pattern": "series enumeration lives on /watch/tv/… (JS-gated); detail only links watch route",
+    "seriesRule": "S/E from watch page"
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/watch/movie/{id} | /watch/tv/{id}… (JS + cookie)"
+    },
+    "response": {
+      "format": "embed (multi-server, not statically resolvable)"
+    },
+    "okoMap": "needs JS run"
+  },
+  "notes": {
+    "blockers": [
+      "CSR-only (no SSR cards on .su/.pk)",
+      "watch pages JS + cookie",
+      "Cloudflare beacon"
+    ],
+    "confidence": "high mirrors, med content (JS required)",
+    "verified": "2026-09-30 (.su/.pk CSR shell ok, user domains only)"
+  }
+}

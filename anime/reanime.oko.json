@@ -1,0 +1,134 @@
+{
+  "schemaVersion": 1,
+  "id": "reanime",
+  "name": "Re:Anime",
+  "category": "anime",
+  "rank": 3,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "custom-anilist-ssr",
+  "mirrors": [
+    "https://reanime.to",
+    "https://reanime.cz",
+    "https://reanime.wtf"
+  ],
+  "primaryMirror": "https://reanime.to",
+  "labeling": {
+    "provider": "everythingmoe",
+    "tags": [
+      "Self-host",
+      "Soft-sub",
+      "Modern interface",
+      "Dub friendly",
+      "Easy download"
+    ],
+    "posterSource": "s4.anilist.co cover medium/large",
+    "qualitySource": "1080p (not all) + Subbed:1180 Dubbed:1155 counts",
+    "notes": "AniList-backed, no JS needed for search/anime/watch."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/home"
+    },
+    "response": {
+      "format": "html-ssr"
+    },
+    "extract": {
+      "rows": [
+        "/home latest+top-weekly",
+        "/top?period=day|week|month",
+        "/schedule"
+      ]
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search?q={query} (+genre/tag/year/status/format/season/studio/audio=Sub|Dub/sort=popularity|score|year)"
+    },
+    "response": {
+      "format": "html-ssr"
+    },
+    "extract": {
+      "collection": "cards -> /anime/{slug-hash}",
+      "example": "/anime/one-piece-xamk74",
+      "poster": "s4.anilist.co"
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/anime/{slug}"
+    },
+    "response": {
+      "format": "html-ssr"
+    },
+    "extract": {
+      "fields": [
+        "banner+s4 cover",
+        "Type/Status/1999-10-20/Fall1999",
+        "AniList/MAL links",
+        "genres/studios/tags%",
+        "Subbed/Dubbed counts",
+        "51 related"
+      ],
+      "okoMap": "CircleFtpPostDetail{title, poster, year, genre, description}"
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/watch/{slug}?ep={n}"
+    },
+    "response": {
+      "format": "html-ssr"
+    },
+    "extract": {
+      "pattern": "flat 1..N pages (30/page), Sub/Dub badges + titles/dates",
+      "seriesRule": "flat Season 1"
+    }
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/servers/{slug}/{ep} -> dataLink https://flixcloud.cc/e/...?v=1|2 -> /stream/from-link?link="
+    },
+    "response": {
+      "format": "hls",
+      "crypto": "WASM AES-256-CBC rotating (~2.5s cold)",
+      "subtitles": "SRT/VTT multi EN/RU/FR/DE/AR + thumb VTT + chapters",
+      "variants": [
+        "sub",
+        "dub",
+        "ai-dubtitles"
+      ]
+    },
+    "okoMap": "Episode{episodeNumber} + FileInfo{url=m3u8} + subtitles[]{src,label,lang}"
+  },
+  "notes": {
+    "blockers": [
+      "flixcloud decrypt needs decrypt.mjs runner",
+      "small library gaps (Request to be added)",
+      "232015/no-servers on some eps"
+    ],
+    "confidence": "high",
+    "verified": "2026-09-30 (search/detail markers ok)"
+  }
+}

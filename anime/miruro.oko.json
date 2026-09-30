@@ -1,0 +1,127 @@
+{
+  "schemaVersion": 1,
+  "id": "miruro",
+  "name": "Miruro",
+  "category": "anime",
+  "rank": 4,
+  "version": "0.1.0",
+  "status": "active",
+  "language": "en",
+  "contentType": "video",
+  "engine": "nextjs-anilist-plus-pipe",
+  "mirrors": [
+    "https://www.miruro.to",
+    "https://www.miruro.ru",
+    "https://www.miruro.bz",
+    "https://www.miruro.tv"
+  ],
+  "primaryMirror": "https://www.miruro.to",
+  "labeling": {
+    "provider": "everythingmoe",
+    "tags": [
+      "Scraper",
+      "Self-host",
+      "Modern interface",
+      "Easy download",
+      "Dub friendly",
+      "Hard-sub",
+      "Soft-sub"
+    ],
+    "posterSource": "s4.anilist.co via graphql.anilist.co",
+    "qualitySource": "HD + provider badges (kiwi/zoro/arc/pahe/bonk… 14 provs)",
+    "notes": "SearchAction target /search?query={…}. Trending ItemList JSON-LD in SSR."
+  },
+  "headers": {
+    "User-Agent": "Mozilla/5.0"
+  },
+  "limits": {
+    "timeoutMs": 15000,
+    "maxConcurrent": 2
+  },
+  "capabilities": [
+    "discovery",
+    "search",
+    "details",
+    "episodes",
+    "streams"
+  ],
+  "discovery": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/ (trending ItemList) + /trending + /schedule + /search?sort=-popularity"
+    },
+    "response": {
+      "format": "html-ssr+ldjson"
+    },
+    "extract": {
+      "itemList": "ListItem{position,name,url:/info/{opaqueId}/{slug}}"
+    }
+  },
+  "search": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/search?query={query} (JS) + AniList GraphQL autocomplete fallback"
+    },
+    "response": {
+      "format": "js-hydrated"
+    },
+    "extract": {
+      "fields": {
+        "opaqueId": "url segment",
+        "slug": "name slug",
+        "poster": "anilist"
+      }
+    }
+  },
+  "details": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/info/{opaqueId}/{slug}"
+    },
+    "response": {
+      "format": "js-hydrated"
+    },
+    "extract": {
+      "fields": [
+        "AniList title/poster/genres/year/rating/type/chars/staff/relations"
+      ]
+    }
+  },
+  "episodes": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/episodes/{anilistId} (aggregated 14 providers)"
+    },
+    "response": {
+      "format": "json"
+    },
+    "extract": {
+      "seriesRule": "flat list, keep-place switching"
+    }
+  },
+  "streams": {
+    "request": {
+      "method": "GET",
+      "urlTemplate": "{mirror}/api/secure/pipe + direct megavid.buzz/anixo.buzz via /api/embed/{anilistId}/{ep}?lang={sub|dub}"
+    },
+    "response": {
+      "format": "hls",
+      "playerOrigin": "https://strm.cx (see /env2.js)",
+      "proxies": [
+        "https://s1.keeply.top/",
+        "https://s2.keeply.top/ (OBF_KEY a54d38…)"
+      ],
+      "subtitles": "VTT multi + hard/soft + MAL sync"
+    },
+    "okoMap": "needs pipe forging/proxy — not plain GET"
+  },
+  "notes": {
+    "blockers": [
+      "WebCrypto pipe forging",
+      "mirror rotation + CAPTCHA/server issues",
+      "bonk shortens 1-2min"
+    ],
+    "confidence": "high",
+    "verified": "2026-09-30 (home/env2.js markers ok)"
+  }
+}
