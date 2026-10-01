@@ -9,11 +9,11 @@
         "rank": 1,
         "manifest": "anime/anikoto.oko.json",
         "status": "active",
-        "version": "0.2.0",
+        "version": "0.2.1",
         "minAppVersion": "1.2.2",
         "updatedAt": "2026-10-01",
-        "sha256": "80e1ebad6cec9c98828c2f11f365ff10cffacb97e2795f2e82e6c41666afec06",
-        "releaseNotes": "Executable ops: home/filter HTML, ajax episodes, koto-bridge streams."
+        "sha256": "bb7387638c13a66261df7c8bca8a44a9b6172121e52f8f251076e853d4968f44",
+        "releaseNotes": "Multi-theme selectors, Sub/Dub flags, fail-closed koto bridge."
       },
       {
         "id": "animepahe",
@@ -101,11 +101,11 @@
         "rank": 1,
         "manifest": "western/shuttletv.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "38ce41048515f41687b0688bfb456490a857d16bf5aaf1a8bf907291b9acd0be",
-        "releaseNotes": "Initial import: user mirrors .su/.pk CSR-only."
+        "updatedAt": "2026-10-01",
+        "sha256": "856b205ceb37a19a180209f3a9f13c523ce99af372ae98582263cd74572b6e6b",
+        "releaseNotes": "Open folders-API discovery + synthetic details; search/streams need keyed TMDB/JS."
       },
       {
         "id": "hydrahd",

@@ -4,7 +4,7 @@
   "name": "ShuttleTV",
   "category": "western",
   "rank": 1,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -180,11 +180,103 @@
   },
   "notes": {
     "blockers": [
-      "CSR-only (no SSR cards on .su/.pk)",
-      "watch pages JS + cookie",
-      "Cloudflare beacon"
+      "CSR-only lists (solved via open folders API)",
+      "search/details/streams need keyed TMDB or JS"
     ],
-    "confidence": "high mirrors, med content (JS required)",
-    "verified": "2026-09-30 (.su/.pk CSR shell ok, user domains only)"
+    "confidence": "high discovery (open API), streams gated",
+    "verified": "2026-10-01 (ops: open folders API discovery; search/details/streams need keyed TMDB/JS)"
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "browse",
+          "title": "Browse",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://shuttletv.su/api/folders/featured?endpoint=browse"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "rows[*].items[*]",
+            "fields": {
+              "sourceID": {
+                "path": "id",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "{field:type}/{value}"
+                  }
+                ]
+              },
+              "title": "title",
+              "posterURL": "poster",
+              "year": "year"
+            }
+          }
+        },
+        {
+          "id": "movies",
+          "title": "Movies",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://shuttletv.su/api/folders/featured?endpoint=movie"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "rows[*].items[*]",
+            "fields": {
+              "sourceID": {
+                "path": "id",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "{field:type}/{value}"
+                  }
+                ]
+              },
+              "title": "title",
+              "posterURL": "poster",
+              "year": "year"
+            }
+          }
+        },
+        {
+          "id": "series",
+          "title": "TV Shows",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://shuttletv.su/api/folders/featured?endpoint=series"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "rows[*].items[*]",
+            "fields": {
+              "sourceID": {
+                "path": "id",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "{field:type}/{value}"
+                  }
+                ]
+              },
+              "title": "title",
+              "posterURL": "poster",
+              "year": "year"
+            }
+          }
+        }
+      ]
+    },
+    "details": {
+      "synthetic": true
+    }
   }
 }

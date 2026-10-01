@@ -4,7 +4,7 @@
   "name": "AniKoto",
   "category": "anime",
   "rank": 1,
-  "version": "0.2.0",
+  "version": "0.2.1",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -435,6 +435,16 @@
             "selector": "self",
             "part": "attr",
             "attr": "title"
+          },
+          "variantSub": {
+            "selector": "a",
+            "part": "attr",
+            "attr": "data-sub"
+          },
+          "variantDub": {
+            "selector": "a",
+            "part": "attr",
+            "attr": "data-dub"
           }
         }
       }
@@ -477,7 +487,19 @@
           },
           "extract": {
             "context": {
-              "slug": "data.0.slug"
+              "slug": {
+                "collection": "data[*]",
+                "match": {
+                  "against": "{title}",
+                  "fields": [
+                    "title.english",
+                    "title.userPreferred",
+                    "title.romaji"
+                  ]
+                },
+                "pick": "slug",
+                "failClosed": true
+              }
             }
           }
         },
