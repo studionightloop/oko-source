@@ -4,7 +4,7 @@
   "name": "AniKage",
   "category": "anime",
   "rank": 6,
-  "version": "0.1.0",
+  "version": "0.2.1",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -22,7 +22,7 @@
     ],
     "posterSource": "s4.anilist.co extraLarge/large/medium",
     "qualitySource": "qualityLabel per source (koto HLS)",
-    "notes": "Convertible directly from AROKI anikage v0.3.5 (pure JSON). SvelteKit __data.json devalue graph — use /api/* instead."
+    "notes": "Convertible directly from AROKI anikage v0.3.5 (pure JSON). SvelteKit __data.json devalue graph \u2014 use /api/* instead."
   },
   "headers": {
     "User-Agent": "Mozilla/5.0",
@@ -47,7 +47,7 @@
     },
     "response": {
       "format": "json",
-      "shape": "{\"data\":[{\"slug,anilistId,title{romaji,english},coverImage{extraLarge},format,year,genres,…}]+"
+      "shape": "{\"data\":[{\"slug,anilistId,title{romaji,english},coverImage{extraLarge},format,year,genres,\u2026}]+"
     },
     "extract": {
       "collection": "data[*]",
@@ -133,7 +133,166 @@
       "incomplete store gaps"
     ],
     "confidence": "med-high (API verified)",
-    "verified": "2026-09-30 (browse data[0].slug ok)",
+    "verified": "2026-10-01 (ops v0.2.0: browse/episodes/detail shapes fetched live)",
     "arokiRef": "anikage v0.3.5 + ANIKAGE_CAPTIONS_0_3_3.md"
-  }
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "trending",
+          "title": "Trending",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/browse?sort=TRENDING_DESC&page={page}"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "slug",
+              "title": "title.english|title.userPreferred|title.romaji",
+              "posterURL": "coverImage.extraLarge|coverImage.large|coverImage.medium",
+              "year": "year"
+            }
+          }
+        },
+        {
+          "id": "popular",
+          "title": "Most Popular",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/browse?sort=POPULARITY_DESC&page={page}"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "slug",
+              "title": "title.english|title.userPreferred|title.romaji",
+              "posterURL": "coverImage.extraLarge|coverImage.large|coverImage.medium",
+              "year": "year"
+            }
+          }
+        },
+        {
+          "id": "top",
+          "title": "Top Rated",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/browse?sort=SCORE_DESC&page={page}"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "slug",
+              "title": "title.english|title.userPreferred|title.romaji",
+              "posterURL": "coverImage.extraLarge|coverImage.large|coverImage.medium",
+              "year": "year"
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://anikage.cc/api/media/anime/browse?q={query}&page={page}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "data[*]",
+        "fields": {
+          "sourceID": "slug",
+          "title": "title.english|title.userPreferred|title.romaji",
+          "posterURL": "coverImage.extraLarge|coverImage.large|coverImage.medium",
+          "year": "year"
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://anikage.cc/api/media/anime/{id}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "extract": {
+        "title": "anime.title.english|anime.title.userPreferred|anime.title.romaji",
+        "synopsis": "anime.malDescription|anime.description",
+        "posterURL": "anime.coverImage.extraLarge|anime.coverImage.large|anime.coverImage.medium",
+        "year": "anime.year",
+        "genres": "anime.genres",
+        "rating": "anime.malScore|anime.averageScore"
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://anikage.cc/api/media/anime/{id}/episodes"
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "@",
+        "fields": {
+          "episodeID": "number",
+          "episodeNumber": "number",
+          "title": "title",
+          "description": "description",
+          "thumbnailURL": "image",
+          "seasonNumber": "seasonNumber"
+        }
+      }
+    },
+    "streams": {
+      "variants": [
+        "sub",
+        "dub"
+      ],
+      "headers": {
+        "Referer": "https://anikage.cc/",
+        "Origin": "https://anikage.cc"
+      },
+      "steps": [
+        {
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/{id}/episodes/{episodeID}/sources?provider=koto&lang={variant}&refresh=1"
+          },
+          "response": {
+            "format": "json"
+          },
+          "extract": {
+            "collection": "sources[*]",
+            "fields": {
+              "url": {
+                "path": "url",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "https://og.bakayaro.live/{value}"
+                  }
+                ]
+              },
+              "quality": "quality",
+              "name": "quality"
+            }
+          }
+        }
+      ]
+    }
+  },
+  "icon": "icons/anikage.png"
 }

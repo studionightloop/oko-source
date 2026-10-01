@@ -4,7 +4,7 @@
   "name": "Miruro",
   "category": "anime",
   "rank": 4,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -122,6 +122,75 @@
       "bonk shortens 1-2min"
     ],
     "confidence": "high",
-    "verified": "2026-09-30 (home/env2.js markers ok)"
+    "verified": "2026-10-01 (ops: trending JSON-LD + SSR details; episodes/streams need JS pipe)"
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "trending",
+          "title": "Trending",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/"
+          },
+          "response": {
+            "format": "jsonld",
+            "contains": "Trending Anime"
+          },
+          "items": {
+            "collection": "itemListElement[*]",
+            "fields": {
+              "sourceID": {
+                "path": "url",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "{origin}/info/"
+                  }
+                ]
+              },
+              "title": "name",
+              "posterURL": {
+                "path": "_",
+                "transforms": []
+              }
+            }
+          }
+        }
+      ]
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/info/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "extract": {
+        "title": {
+          "selector": "meta[property=\"og:title\"]",
+          "part": "attr",
+          "attr": "content"
+        },
+        "synopsis": {
+          "selector": "meta[property=\"og:description\"]",
+          "part": "attr",
+          "attr": "content"
+        },
+        "posterURL": {
+          "selector": "img[src*=\"cover/large\"]",
+          "part": "attr",
+          "attr": "src"
+        }
+      }
+    },
+    "episodes": {
+      "auth": "js-pipe"
+    },
+    "streams": {
+      "auth": "js-pipe"
+    }
   }
 }

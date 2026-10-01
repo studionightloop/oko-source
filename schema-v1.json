@@ -144,6 +144,10 @@
           "type": "string"
         }
       }
+    },
+    "icon": {
+      "type": "string",
+      "description": "Relative icon path in repo (e.g. icons/anikage.png), 192px PNG"
     }
   }
 }

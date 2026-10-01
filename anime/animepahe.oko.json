@@ -4,7 +4,7 @@
   "name": "AnimePahe",
   "category": "anime",
   "rank": 2,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "blocked",
   "language": "en",
   "contentType": "video",
@@ -132,6 +132,80 @@
       "1080p buffering"
     ],
     "confidence": "pattern-high / mirrors-blocked",
-    "verified": "2026-09-30 (403 on all mirrors)"
+    "verified": "2026-10-01 (ops: public JSON patterns; NOT live-verified, Cloudflare-gated)"
+  },
+  "icon": "icons/animepahe.png",
+  "ops": {
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/api?m=search&q={query}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "data[*]",
+        "fields": {
+          "sourceID": "session",
+          "title": "title",
+          "posterURL": "poster|image"
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/anime/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "extract": {
+        "title": {
+          "selector": "h1",
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "synopsis": {
+          "selector": "div.synopsis",
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "posterURL": {
+          "selector": "meta[property=\"og:image\"]",
+          "part": "attr",
+          "attr": "content"
+        }
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/api?m=release&id={id}&sort=episode_asc&page={page}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "data[*]",
+        "fields": {
+          "episodeID": "session|id",
+          "episodeNumber": "episode",
+          "title": "title"
+        }
+      }
+    },
+    "streams": {
+      "auth": "cf-clearance+kwik-decrypt"
+    }
   }
 }

@@ -4,7 +4,7 @@
   "name": "HydraHD",
   "category": "western",
   "rank": 2,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -110,6 +110,249 @@
       "obfuscated anti-scrape"
     ],
     "confidence": "high discovery/search/details/episodes, med-low streams",
-    "verified": "2026-09-30 (movies markers ok)"
+    "verified": "2026-10-01 (ops: SSR cards/search/details/episodes; streams need ajax session)"
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "movies",
+          "title": "Movies",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://hydrahd.ws/movies"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "figure.figured",
+            "fields": {
+              "sourceID": {
+                "selector": "a.hthis",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "/movie/"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "a.hthis",
+                "part": "attr",
+                "attr": "title",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "Stream "
+                  },
+                  {
+                    "op": "removeSuffix",
+                    "value": " online HD"
+                  },
+                  {
+                    "op": "trim"
+                  }
+                ]
+              },
+              "posterURL": {
+                "selector": "img[src*=\"tmdb\"]",
+                "part": "attr",
+                "attr": "src"
+              },
+              "quality": {
+                "selector": "span",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "id": "popular",
+          "title": "Popular",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://hydrahd.ws/movies/popular/"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "figure.figured",
+            "fields": {
+              "sourceID": {
+                "selector": "a.hthis",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "/movie/"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "a.hthis",
+                "part": "attr",
+                "attr": "title",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "Stream "
+                  },
+                  {
+                    "op": "removeSuffix",
+                    "value": " online HD"
+                  },
+                  {
+                    "op": "trim"
+                  }
+                ]
+              },
+              "posterURL": {
+                "selector": "img[src*=\"tmdb\"]",
+                "part": "attr",
+                "attr": "src"
+              },
+              "quality": {
+                "selector": "span",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              }
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://hydrahd.ws/search/{query}/1"
+      },
+      "response": {
+        "format": "html"
+      },
+      "items": {
+        "collection": "figure.figured",
+        "fields": {
+          "sourceID": {
+            "selector": "a.hthis",
+            "part": "attr",
+            "attr": "href",
+            "transforms": [
+              {
+                "op": "removePrefix",
+                "value": "/movie/"
+              }
+            ]
+          },
+          "title": {
+            "selector": "a.hthis",
+            "part": "attr",
+            "attr": "title",
+            "transforms": [
+              {
+                "op": "removePrefix",
+                "value": "Stream "
+              },
+              {
+                "op": "removeSuffix",
+                "value": " online HD"
+              },
+              {
+                "op": "trim"
+              }
+            ]
+          },
+          "posterURL": {
+            "selector": "img[src*=\"tmdb\"]",
+            "part": "attr",
+            "attr": "src"
+          }
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://hydrahd.ws/movie/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "extract": {
+        "title": {
+          "selector": "h1",
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "synopsis": {
+          "selector": "meta[property=\"og:description\"]",
+          "part": "attr",
+          "attr": "content"
+        },
+        "posterURL": {
+          "selector": "meta[property=\"og:image\"]",
+          "part": "attr",
+          "attr": "content"
+        }
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://hydrahd.ws/watchseries/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "items": {
+        "collection": "a.dynamic-ep-link",
+        "fields": {
+          "episodeID": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "data-episode"
+          },
+          "episodeNumber": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "data-episode"
+          },
+          "seasonNumber": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "data-season"
+          },
+          "title": {
+            "selector": "span.tv_episode_name",
+            "part": "text",
+            "transforms": [
+              {
+                "op": "trim"
+              }
+            ]
+          }
+        }
+      }
+    },
+    "streams": {
+      "auth": "ajax-mov-session"
+    }
   }
 }

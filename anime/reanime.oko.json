@@ -4,7 +4,7 @@
   "name": "Re:Anime",
   "category": "anime",
   "rank": 3,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -129,6 +129,179 @@
       "232015/no-servers on some eps"
     ],
     "confidence": "high",
-    "verified": "2026-09-30 (search/detail markers ok)"
+    "verified": "2026-10-01 (ops: SSR cards/detail/episodes; streams need flixcloud decrypt)"
+  },
+  "icon": "icons/reanime.png",
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "latest",
+          "title": "Latest",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/home"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "a[href^=\"/anime/\"]",
+            "fields": {
+              "sourceID": {
+                "selector": "self",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "/anime/"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "img",
+                "part": "attr",
+                "attr": "alt"
+              },
+              "posterURL": {
+                "selector": "img",
+                "part": "attr",
+                "attr": "src"
+              }
+            }
+          }
+        },
+        {
+          "id": "top",
+          "title": "Top Airing",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/top?period=week"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "a[href^=\"/anime/\"]",
+            "fields": {
+              "sourceID": {
+                "selector": "self",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "/anime/"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "img",
+                "part": "attr",
+                "attr": "alt"
+              },
+              "posterURL": {
+                "selector": "img",
+                "part": "attr",
+                "attr": "src"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/search?q={query}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "items": {
+        "collection": "a[href^=\"/anime/\"]",
+        "fields": {
+          "sourceID": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "href",
+            "transforms": [
+              {
+                "op": "removePrefix",
+                "value": "/anime/"
+              }
+            ]
+          },
+          "title": {
+            "selector": "img",
+            "part": "attr",
+            "attr": "alt"
+          },
+          "posterURL": {
+            "selector": "img",
+            "part": "attr",
+            "attr": "src"
+          }
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/anime/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "extract": {
+        "title": {
+          "selector": "h1",
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "synopsis": {
+          "selector": "meta[name=\"description\"]",
+          "part": "attr",
+          "attr": "content"
+        },
+        "posterURL": {
+          "selector": "meta[property=\"og:image\"]",
+          "part": "attr",
+          "attr": "content"
+        }
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/watch/{id}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "items": {
+        "collection": "a.ep-card",
+        "fields": {
+          "episodeID": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "data-episode"
+          },
+          "episodeNumber": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "data-episode"
+          }
+        }
+      }
+    },
+    "streams": {
+      "auth": "flixcloud-wasm-decrypt"
+    }
   }
 }

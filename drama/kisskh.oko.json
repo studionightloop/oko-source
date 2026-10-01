@@ -4,7 +4,7 @@
   "name": "KissKH",
   "category": "drama",
   "rank": 1,
-  "version": "0.1.0",
+  "version": "0.2.1",
   "status": "active",
   "language": "mul",
   "contentType": "video",
@@ -27,7 +27,7 @@
       "Thai",
       "SUB"
     ],
-    "posterSource": "mixed CDN (kissimge1.site, TMDB w1000, Viki, wsrv.nl, cloudfront, netflix nflxso) — hotlink ok",
+    "posterSource": "mixed CDN (kissimge1.site, TMDB w1000, Viki, wsrv.nl, cloudfront, netflix nflxso) \u2014 hotlink ok",
     "qualitySource": "240p-720p HD claim (even 1080p), SUB badge from episodes[].sub count",
     "notes": "No genres/rating/HD flag in API. Country->K/C/J-Drama chip, type TVSeries/Movie/Anime, status Ongoing/Completed, label Coming/Special Ep."
   },
@@ -137,7 +137,7 @@
         "Video_tmp/BackupVideo",
         "ThirdVideo"
       ],
-      "type": "hls (cdn.kisskh.do/hls/…m3u8, time-limited, resolve fresh)"
+      "type": "hls (cdn.kisskh.do/hls/\u2026m3u8, time-limited, resolve fresh)"
     },
     "subtitles": {
       "request": "{mirror}/api/Sub/{episodeId}?kkey={subKkey}",
@@ -167,6 +167,154 @@
       "no genre param"
     ],
     "confidence": "high",
-    "verified": "2026-09-30 (Search/List/Drama/Upcoming live)"
-  }
+    "verified": "2026-10-01 (ops v0.2.0: Search/List/Drama JSON fetched live; streams need kkey)"
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "popular",
+          "title": "Most Watched",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://kisskh.co/api/DramaList/List?page={page}&type=0&sub=0&country=0&status=0&order=1&pageSize=20",
+            "headers": {
+              "Accept": "application/json",
+              "Referer": "https://kisskh.co/"
+            }
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "id",
+              "title": "title",
+              "posterURL": "thumbnail"
+            }
+          }
+        },
+        {
+          "id": "recent",
+          "title": "Recently Updated",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://kisskh.co/api/DramaList/List?page={page}&type=0&sub=0&country=0&status=0&order=2&pageSize=20",
+            "headers": {
+              "Accept": "application/json",
+              "Referer": "https://kisskh.co/"
+            }
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "id",
+              "title": "title",
+              "posterURL": "thumbnail"
+            }
+          }
+        },
+        {
+          "id": "new",
+          "title": "New Releases",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://kisskh.co/api/DramaList/List?page={page}&type=0&sub=0&country=0&status=0&order=3&pageSize=20",
+            "headers": {
+              "Accept": "application/json",
+              "Referer": "https://kisskh.co/"
+            }
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "data[*]",
+            "fields": {
+              "sourceID": "id",
+              "title": "title",
+              "posterURL": "thumbnail"
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://kisskh.co/api/DramaList/Search?q={query}&type=0",
+        "headers": {
+          "Accept": "application/json",
+          "Referer": "https://kisskh.co/"
+        }
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "@",
+        "fields": {
+          "sourceID": "id",
+          "title": "title",
+          "posterURL": "thumbnail"
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://kisskh.co/api/DramaList/Drama/{id}?isq=false",
+        "headers": {
+          "Accept": "application/json",
+          "Referer": "https://kisskh.co/"
+        }
+      },
+      "response": {
+        "format": "json"
+      },
+      "extract": {
+        "title": "title",
+        "synopsis": "description",
+        "posterURL": "thumbnail",
+        "year": {
+          "path": "releaseDate",
+          "transforms": [
+            {
+              "op": "firstInteger"
+            }
+          ]
+        },
+        "genres": "country"
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://kisskh.co/api/DramaList/Drama/{id}?isq=false",
+        "headers": {
+          "Accept": "application/json",
+          "Referer": "https://kisskh.co/"
+        }
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "episodes[*]",
+        "fields": {
+          "episodeID": "id",
+          "episodeNumber": "number",
+          "title": "number"
+        }
+      }
+    },
+    "streams": {
+      "auth": "kkey-session"
+    }
+  },
+  "icon": "icons/kisskh.png"
 }

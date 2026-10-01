@@ -1,7 +1,7 @@
 {
   "name": "Oko Sources",
   "schemaVersion": 1,
-  "updated": "2026-09-30",
+  "updated": "2026-10-01",
   "categories": {
     "anime": [
       {
@@ -9,44 +9,44 @@
         "rank": 1,
         "manifest": "anime/anikoto.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "f16f65e8b062fea4a46b81d0ae90a183c8df748b1287e376151b9c69ad0052db",
-        "releaseNotes": "Initial import: 9 mirrors, filter/watch extraction, koto HLS route."
+        "updatedAt": "2026-10-01",
+        "sha256": "80e1ebad6cec9c98828c2f11f365ff10cffacb97e2795f2e82e6c41666afec06",
+        "releaseNotes": "Executable ops: home/filter HTML, ajax episodes, koto-bridge streams."
       },
       {
         "id": "animepahe",
         "rank": 2,
         "manifest": "anime/animepahe.oko.json",
         "status": "blocked",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "b9562c8c5988196a7b40ffcde20d65c31480197f2dc5ecaa7fce03a81bf06f9b",
-        "releaseNotes": "Initial import: official .pw/.com/.org, CF-blocked, needs session runner."
+        "updatedAt": "2026-10-01",
+        "sha256": "cb1dbfbf82aa4452f5c4a7cf9210227c0f1b7fb8af28b9428a509cda5cfd48a7",
+        "releaseNotes": "JSON patterns (unverified live, CF-gated); kwik decrypt pending."
       },
       {
         "id": "reanime",
         "rank": 3,
         "manifest": "anime/reanime.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "cceec0fdfd73af3903861d071105e9dca48e1ab26693de66781a382bae8dc72a",
-        "releaseNotes": "Initial import: SSR search/detail, flixcloud HLS + multi-sub."
+        "updatedAt": "2026-10-01",
+        "sha256": "18ddcde7433b29c0b434e9134a20f710e2475760048d50db12502af4c84721b9",
+        "releaseNotes": "Executable ops: SSR cards/detail/episodes; flixcloud decrypt pending."
       },
       {
         "id": "miruro",
         "rank": 4,
         "manifest": "anime/miruro.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "09e939dba602ecfca17ccd8fcec8a8ff249ddf2d8a1bf306cc14b89b115e0d39",
-        "releaseNotes": "Initial import: 4 mirrors, ItemList discovery, secure pipe streams."
+        "updatedAt": "2026-10-01",
+        "sha256": "19e9ac256f81d3bfbb51d0fc3f0631d9e03f35053c2c41c9c031a6176df8ed1d",
+        "releaseNotes": "Executable ops: trending JSON-LD + SSR details; pipe pending."
       },
       {
         "id": "animex",
@@ -64,11 +64,11 @@
         "rank": 6,
         "manifest": "anime/anikage.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.1",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "3333bceb7f7e636e7bf3cc02e385ff5d0d7a1e0dc8513eb887526da967f8aef9",
-        "releaseNotes": "Initial import: pure-JSON browse/details/episodes/koto HLS."
+        "updatedAt": "2026-10-01",
+        "sha256": "1e44c722c288191714d8d48b18264cb974641529592e8f09548d354257d809b7",
+        "releaseNotes": "Adds source icon (0.2.0 ops unchanged)."
       },
       {
         "id": "lunar",
@@ -88,11 +88,11 @@
         "rank": 1,
         "manifest": "drama/kisskh.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.1",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "7317f1e41f0c25238c0fc4dc4c3eea0c9229dbfea59d1e5ac31d975b138df7ae",
-        "releaseNotes": "Initial import: 6 mirrors, Search/List/Drama JSON, kkey HLS."
+        "updatedAt": "2026-10-01",
+        "sha256": "ddc089cd47d5d273b06aff2f0009e0a5b2346adcf35f22a8716506cc0c5db17f",
+        "releaseNotes": "Adds source icon (0.2.0 ops unchanged)."
       }
     ],
     "western": [
@@ -112,11 +112,11 @@
         "rank": 2,
         "manifest": "western/hydrahd.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "ab068116edaf1e84f7e64830554687e48089361e4790056d3a7529852a5ef3cf",
-        "releaseNotes": "Initial import: SSR movies + genre/country filters, ajax streams."
+        "updatedAt": "2026-10-01",
+        "sha256": "13c25113f0da4448dace6f6b4d6c5a2c58d496ee8ff93bbc6ff221d49db76447",
+        "releaseNotes": "Executable ops: SSR cards/search/details/episodes; ajax session pending."
       },
       {
         "id": "atlantic",
@@ -134,11 +134,11 @@
         "rank": 4,
         "manifest": "western/bingr.oko.json",
         "status": "active",
-        "version": "0.1.0",
+        "version": "0.2.0",
         "minAppVersion": "1.2.2",
-        "updatedAt": "2026-09-30",
-        "sha256": "85762d6de261f57ee01a684f0f0fa527055cdaf2a32627be9be57355b4488f20",
-        "releaseNotes": "Initial import: SPA + health API, token-gated HLS."
+        "updatedAt": "2026-10-01",
+        "sha256": "f967a3b3bb5aeea86c36f2787d4687e1bc6d18483292b9d3327bf01aaa311899",
+        "releaseNotes": "Executable ops: open JSON catalog + enumerated episodes; streams token-gated."
       }
     ]
   }

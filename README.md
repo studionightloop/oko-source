@@ -3,7 +3,29 @@
 Declarative source manifests for **Oko Mobile** — anime, Asian drama, western movies/TV.
 One file per site. No code, no keys, no app changes here. The app reads these later.
 
-Ready to split into a standalone git repo as-is.
+## Install
+
+Have **Oko Mobile** installed? Tap to add the whole repo, or a single source
+(opens the app and installs it — same as typing the repo in Settings → Content source):
+
+[![Add repo](https://img.shields.io/badge/Add_repo-studionightloop%2Foko--source-blue)](oko://add-repo?repo=studionightloop%2Foko-source)
+
+| Source | Install |
+| --- | --- |
+| AniKoto | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=anikoto) |
+| AnimePahe | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=animepahe) |
+| Re:Anime | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=reanime) |
+| Miruro | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=miruro) |
+| AnimeX | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=animex) |
+| AniKage | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=anikage) |
+| Lunar | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=lunar) |
+| KissKH | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=kisskh) |
+| ShuttleTV | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=shuttletv) |
+| HydraHD | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=hydrahd) |
+| Atlantic | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=atlantic) |
+| Bingr | [Install](oko://add-repo?repo=studionightloop%2Foko-source&source=bingr) |
+
+Manual: Oko → Settings → Content source → paste `studionightloop/oko-source` → Add.
 
 ## Sources (rank order preserved)
 
@@ -80,3 +102,12 @@ App (later) diffs installed vs registry and shows
 No signing yet — plain JSON + `sha256` in registry verified by `test.py`.
 Planned: offline Ed25519 sign `registry.json` + manifests, `publicKey` in app,
 `allowedHosts`/https-only enforced on use. No secrets in git.
+
+## Attribution
+
+Source icons (`icons/*.png`, 192px) are from
+[yuzono/anime-extensions](https://github.com/yuzono/anime-extensions)
+(Apache-2.0) — same upstream whose extension model (per-source icon, base
+URLs/mirrors, language, discovery/search/details/episodes/streams ops)
+this repo mirrors in declarative JSON form. No code taken; manifests are
+original Oko work.

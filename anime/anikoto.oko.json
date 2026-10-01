@@ -4,7 +4,7 @@
   "name": "AniKoto",
   "category": "anime",
   "rank": 1,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -20,7 +20,7 @@
     "https://9animez.org",
     "https://hianimez.org"
   ],
-  "primaryMirror": "https://anichi.to",
+  "primaryMirror": "https://anikototv.to",
   "labeling": {
     "provider": "everythingmoe",
     "tags": [
@@ -156,6 +156,361 @@
       "popups"
     ],
     "confidence": "high",
-    "verified": "2026-09-30 via curl (home/filter/watch markers ok)"
+    "verified": "2026-10-01 (ops: home/filter HTML, ajax episodes, koto bridge streams)"
+  },
+  "icon": "icons/anikoto.png",
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "trending",
+          "title": "Trending",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/home"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": ".ani.items .item",
+            "fields": {
+              "sourceID": {
+                "selector": "a.name.d-title",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "{origin}/watch/"
+                  },
+                  {
+                    "op": "removeSuffix",
+                    "value": "/ep-1"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "a.name.d-title",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              },
+              "posterURL": {
+                "selector": "div.poster img",
+                "part": "attr",
+                "attr": "src"
+              }
+            }
+          }
+        },
+        {
+          "id": "most-watched",
+          "title": "Most Watched",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/filter?sort=most_watched&page={page}"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "#list-items div.item",
+            "fields": {
+              "sourceID": {
+                "selector": "a.name.d-title",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "{origin}/watch/"
+                  },
+                  {
+                    "op": "removeSuffix",
+                    "value": "/ep-1"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "a.name.d-title",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              },
+              "posterURL": {
+                "selector": "div.poster img",
+                "part": "attr",
+                "attr": "src"
+              }
+            }
+          }
+        },
+        {
+          "id": "top-rated",
+          "title": "Top Rated",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/filter?sort=score&page={page}"
+          },
+          "response": {
+            "format": "html"
+          },
+          "items": {
+            "collection": "#list-items div.item",
+            "fields": {
+              "sourceID": {
+                "selector": "a.name.d-title",
+                "part": "attr",
+                "attr": "href",
+                "transforms": [
+                  {
+                    "op": "removePrefix",
+                    "value": "{origin}/watch/"
+                  },
+                  {
+                    "op": "removeSuffix",
+                    "value": "/ep-1"
+                  }
+                ]
+              },
+              "title": {
+                "selector": "a.name.d-title",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              },
+              "posterURL": {
+                "selector": "div.poster img",
+                "part": "attr",
+                "attr": "src"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/filter?keyword={query}&page={page}"
+      },
+      "response": {
+        "format": "html"
+      },
+      "items": {
+        "collection": "#list-items div.item",
+        "fields": {
+          "sourceID": {
+            "selector": "a.name.d-title",
+            "part": "attr",
+            "attr": "href",
+            "transforms": [
+              {
+                "op": "removePrefix",
+                "value": "{origin}/watch/"
+              },
+              {
+                "op": "removeSuffix",
+                "value": "/ep-1"
+              }
+            ]
+          },
+          "title": {
+            "selector": "a.name.d-title",
+            "part": "text",
+            "transforms": [
+              {
+                "op": "trim"
+              }
+            ]
+          },
+          "posterURL": {
+            "selector": "div.poster img",
+            "part": "attr",
+            "attr": "src"
+          }
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/watch/{id}",
+        "altTemplates": [
+          "{mirror}/anime/{id}"
+        ]
+      },
+      "response": {
+        "format": "html"
+      },
+      "extract": {
+        "title": {
+          "selector": [
+            "h1.media-title a",
+            "h1.title",
+            "h1"
+          ],
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "synopsis": {
+          "selector": [
+            ".synopsis-short p",
+            ".desc",
+            ".synopsis p",
+            ".synopsis"
+          ],
+          "part": "text",
+          "transforms": [
+            {
+              "op": "trim"
+            }
+          ]
+        },
+        "posterURL": {
+          "selector": "meta[property=\"og:image\"]",
+          "part": "attr",
+          "attr": "content"
+        },
+        "genres": {
+          "collection": "a[href*=\"/genre/\"]"
+        }
+      }
+    },
+    "episodes": {
+      "sharedFrom": {
+        "request": {
+          "method": "GET",
+          "urlTemplate": "{mirror}/watch/{id}"
+        },
+        "field": {
+          "selector": "#watch-main",
+          "part": "attr",
+          "attr": "data-id"
+        },
+        "altTemplates": [
+          "{mirror}/anime/{id}"
+        ]
+      },
+      "request": {
+        "method": "GET",
+        "urlTemplate": "{mirror}/ajax/episode/list/{sharedID}",
+        "headers": {
+          "X-Requested-With": "XMLHttpRequest",
+          "Referer": "{mirror}/watch/{id}"
+        }
+      },
+      "response": {
+        "format": "json",
+        "unwrap": "result"
+      },
+      "items": {
+        "collection": "li[title]",
+        "fields": {
+          "episodeID": {
+            "selector": "a",
+            "part": "attr",
+            "attr": "data-id"
+          },
+          "episodeNumber": {
+            "selector": "a",
+            "part": "attr",
+            "attr": "data-num"
+          },
+          "title": {
+            "selector": "self",
+            "part": "attr",
+            "attr": "title"
+          }
+        }
+      }
+    },
+    "streams": {
+      "variants": [
+        "sub",
+        "dub"
+      ],
+      "steps": [
+        {
+          "request": {
+            "method": "GET",
+            "urlTemplate": "{mirror}/watch/{id}"
+          },
+          "response": {
+            "format": "html"
+          },
+          "extract": {
+            "context": {
+              "title": {
+                "selector": "h1.media-title a",
+                "part": "text",
+                "transforms": [
+                  {
+                    "op": "trim"
+                  }
+                ]
+              }
+            }
+          }
+        },
+        {
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/browse?q={title}&page=1"
+          },
+          "response": {
+            "format": "json"
+          },
+          "extract": {
+            "context": {
+              "slug": "data.0.slug"
+            }
+          }
+        },
+        {
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://anikage.cc/api/media/anime/{slug}/episodes/{episodeID}/sources?provider=koto&lang={variant}&refresh=1",
+            "headers": {
+              "Referer": "https://anikage.cc/",
+              "Origin": "https://anikage.cc"
+            }
+          },
+          "response": {
+            "format": "json"
+          },
+          "extract": {
+            "collection": "sources[*]",
+            "fields": {
+              "url": {
+                "path": "url",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "https://og.bakayaro.live/{value}"
+                  }
+                ]
+              },
+              "quality": "quality",
+              "name": "quality"
+            }
+          }
+        }
+      ]
+    }
   }
 }

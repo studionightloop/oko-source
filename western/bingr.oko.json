@@ -4,7 +4,7 @@
   "name": "Bingr",
   "category": "western",
   "rank": 4,
-  "version": "0.1.0",
+  "version": "0.2.0",
   "status": "active",
   "language": "en",
   "contentType": "video",
@@ -94,6 +94,129 @@
       "token-gated API"
     ],
     "confidence": "high engine/routes, med search/details, low-med streams",
-    "verified": "2026-09-30 (/api/health ok)"
+    "verified": "2026-10-01 (ops: open JSON catalog/search/details + enumerated episodes; streams token-gated)"
+  },
+  "ops": {
+    "discovery": {
+      "sections": [
+        {
+          "id": "movies",
+          "title": "Movies",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://api.bingr.one/api/discover/movie?page={page}"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "results[*]",
+            "fields": {
+              "sourceID": {
+                "path": "id",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "{field:type}/{value}"
+                  }
+                ]
+              },
+              "title": "title",
+              "posterURL": "poster",
+              "year": "year"
+            }
+          }
+        },
+        {
+          "id": "tv",
+          "title": "TV Shows",
+          "request": {
+            "method": "GET",
+            "urlTemplate": "https://api.bingr.one/api/discover/tv?page={page}"
+          },
+          "response": {
+            "format": "json"
+          },
+          "items": {
+            "collection": "results[*]",
+            "fields": {
+              "sourceID": {
+                "path": "id",
+                "transforms": [
+                  {
+                    "op": "template",
+                    "value": "{field:type}/{value}"
+                  }
+                ]
+              },
+              "title": "title",
+              "posterURL": "poster",
+              "year": "year"
+            }
+          }
+        }
+      ]
+    },
+    "search": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://api.bingr.one/api/search?q={query}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "items": {
+        "collection": "results[*]",
+        "fields": {
+          "sourceID": {
+            "path": "id",
+            "transforms": [
+              {
+                "op": "template",
+                "value": "{field:type}/{value}"
+              }
+            ]
+          },
+          "title": "title",
+          "posterURL": "poster",
+          "year": "year"
+        }
+      }
+    },
+    "details": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://api.bingr.one/api/details/{id}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "extract": {
+        "title": "title",
+        "synopsis": "overview",
+        "posterURL": "poster",
+        "year": "year",
+        "genres": "genres",
+        "rating": "rating"
+      }
+    },
+    "episodes": {
+      "request": {
+        "method": "GET",
+        "urlTemplate": "https://api.bingr.one/api/details/{id}"
+      },
+      "response": {
+        "format": "json"
+      },
+      "range": {
+        "collection": "seasons[*]",
+        "season": "season",
+        "count": "episodes",
+        "skipZero": true
+      }
+    },
+    "streams": {
+      "auth": "token-gated"
+    }
   }
 }
